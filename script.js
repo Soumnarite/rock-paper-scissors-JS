@@ -49,7 +49,7 @@ function game(){
 
     let playerScore = 0;
     let computerScore = 0;
-    let i = 0;
+    let i;
 
     for (i = 0; i < rounds; i++) {
 
