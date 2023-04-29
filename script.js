@@ -2,13 +2,32 @@ function computerPlay(){
 
     let choices = ["Rock", "Paper", "Scissors"];
     let randomIndex = Math.floor(Math.random() * choices.length);
-    return choices[randomIndex];
+    return choices[randomIndex].toLowerCase().trim();
+}
+
+function playerPlay(i){
+
+    let playerChoice;
+    let validInput = false;
+
+    while (!validInput)
+    {
+        playerChoice = prompt(`Round ${i+1}/${rounds}: Rock, Paper, Scissors?`).toLowerCase().trim();
+
+        if (playerChoice == "rock" || playerChoice == "paper" || playerChoice == "scissors")
+        {
+            validInput = true;
+        }
+        else
+        {
+            console.log("Invalid input! Please enter Rock, Paper, or Scissors.");
+        }
+    }
+
+    return playerChoice;
 }
 
 function playRound(playerChoice, computerChoice){
-
-    playerChoice = playerChoice.toLowerCase();
-    computerChoice = computerChoice.toLowerCase();
 
     if(playerChoice == computerChoice)
     {
@@ -30,10 +49,11 @@ function game(){
 
     let playerScore = 0;
     let computerScore = 0;
+    let i = 0;
 
-    for (let i = 0; i < rounds; i++) {
+    for (i = 0; i < rounds; i++) {
 
-        let playerChoice = prompt("Round " + (i) + "/" + rounds + ": Rock, Paper, Scissors?");
+        let playerChoice = playerPlay(i);
         let computerChoice = computerPlay();
         let result = playRound(playerChoice, computerChoice);
 
@@ -75,6 +95,13 @@ function game(){
     }
 }
 
-let rounds = prompt("How many rounds would you like to play?");
+let rounds;
+
+while (rounds === null || isNaN(rounds))
+{
+    rounds = prompt("Rock Paper Scissors! \nHow many rounds would you like to play?");
+
+    if (rounds === null) {break;}
+}
 
 console.log(game());
