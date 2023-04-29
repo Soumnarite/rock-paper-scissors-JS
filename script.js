@@ -1,8 +1,8 @@
 function computerPlay(){
 
-    let choices = ["Rock", "Paper", "Scissors"];
+    let choices = ["rock", "paper", "scissors"];
     let randomIndex = Math.floor(Math.random() * choices.length);
-    return choices[randomIndex].toLowerCase().trim();
+    return choices[randomIndex];
 }
 
 function playerPlay(i){
@@ -12,7 +12,11 @@ function playerPlay(i){
 
     while (!validInput)
     {
-        playerChoice = prompt(`Round ${i+1}/${rounds}: Rock, Paper, Scissors?`).toLowerCase().trim();
+        playerChoice = prompt(`Round ${i+1}/${rounds}: Rock, Paper, Scissors?`);
+
+        if (playerChoice === null) {return null;}
+
+        playerChoice = playerChoice.toLowerCase().trim();
 
         if (playerChoice == "rock" || playerChoice == "paper" || playerChoice == "scissors")
         {
@@ -24,7 +28,7 @@ function playerPlay(i){
         }
     }
 
-    return playerChoice;
+    return playerChoice
 }
 
 function playRound(playerChoice, computerChoice){
@@ -45,15 +49,40 @@ function playRound(playerChoice, computerChoice){
     }
 }
 
+let playerScore = 0;
+let computerScore = 0;
+
+function endLoop(){
+
+    console.log("------------Game Over!------------ \n")
+
+    if(playerScore > computerScore)
+    {
+        console.log(`You Win! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`);
+    }
+    else if(playerScore < computerScore)
+    {
+        console.log(`You Lose! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`);
+    }
+    else
+    {
+        console.log(`Tie! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`);
+    }
+}
+
 function game(){
 
-    let playerScore = 0;
-    let computerScore = 0;
     let i;
 
     for (i = 0; i < rounds; i++) {
 
         let playerChoice = playerPlay(i);
+
+        if (playerChoice === null) {
+            console.log("Game canceled!");
+            return;
+        }
+
         let computerChoice = computerPlay();
         let result = playRound(playerChoice, computerChoice);
 
@@ -77,20 +106,7 @@ function game(){
 
         if(i == rounds - 1)
         {
-            console.log("------------Game Over!------------ \n")
-
-            if(playerScore > computerScore)
-            {
-                return `You Win! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`;
-            }
-            else if(playerScore < computerScore)
-            {
-                return `You lose! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`;
-            }
-            else
-            {
-                return `Tie! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`;
-            }
+            endLoop();
         }
     }
 }
@@ -104,4 +120,4 @@ while (rounds === null || isNaN(rounds))
     if (rounds === null) {break;}
 }
 
-console.log(game());
+game();
