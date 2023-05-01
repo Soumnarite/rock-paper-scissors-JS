@@ -1,3 +1,38 @@
+const rockBtn = document.getElementById('rock-btn');
+const paperBtn = document.getElementById('paper-btn');
+const scissorsBtn = document.getElementById('scissors-btn');
+const playerScoreDisplay = document.getElementById('player-score');
+const computerScoreDisplay = document.getElementById('computer-score');
+const resultsDisplay = document.getElementById('results');
+
+let playerScore = 0;
+let computerScore = 0;
+
+rockBtn.addEventListener('click', function() {
+    pressButton('rock');
+});
+
+paperBtn.addEventListener('click', function() {
+    pressButton('paper');
+});
+
+scissorsBtn.addEventListener('click', function() {
+    pressButton('scissors');
+});
+
+function pressButton(str){
+
+    let playerChoice = str;
+    playRound(playerChoice);
+}
+
+function playRound(playerChoice){
+
+    const computerChoice = computerPlay();
+    const result = checkWinner(playerChoice, computerChoice);
+    addScore(result, playerChoice, computerChoice);
+}
+
 function computerPlay(){
 
     let choices = ["rock", "paper", "scissors"];
@@ -5,33 +40,7 @@ function computerPlay(){
     return choices[randomIndex];
 }
 
-function playerPlay(i){
-
-    let playerChoice;
-    let validInput = false;
-
-    while (!validInput)
-    {
-        playerChoice = prompt(`Round ${i+1}/${rounds}: Rock, Paper, Scissors?`);
-
-        if (playerChoice === null) {return null;}
-
-        playerChoice = playerChoice.toLowerCase().trim();
-
-        if (playerChoice == "rock" || playerChoice == "paper" || playerChoice == "scissors")
-        {
-            validInput = true;
-        }
-        else
-        {
-            console.log("Invalid input! Please enter Rock, Paper, or Scissors.");
-        }
-    }
-
-    return playerChoice
-}
-
-function playRound(playerChoice, computerChoice){
+function checkWinner(playerChoice, computerChoice){
 
     if(playerChoice == computerChoice)
     {
@@ -49,75 +58,41 @@ function playRound(playerChoice, computerChoice){
     }
 }
 
-let playerScore = 0;
-let computerScore = 0;
+function addScore(result, playerChoice, computerChoice){
 
-function endLoop(){
-
-    console.log("------------Game Over!------------ \n")
-
-    if(playerScore > computerScore)
+    if(result == 'player')
     {
-        console.log(`You Win! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`);
+        playerScore++;
     }
-    else if(playerScore < computerScore)
+    else if(result == 'computer')
     {
-        console.log(`You Lose! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`);
+        computerScore++;
     }
-    else
+
+    playerScoreDisplay.textContent = playerScore;
+    computerScoreDisplay.textContent = computerScore;
+
+    let roundResultMessage = `You chose ${playerChoice}, computer chose ${computerChoice}.
+                                 ${result === 'tie' ? 'Tie!' : result === 'player' ? 'You win!' : 'Computer wins!'}`;
+
+    resultsDisplay.textContent = roundResultMessage;
+
+    if(playerScore == 5)
     {
-        console.log(`Tie! \nPlayer score: ${playerScore} Computer score: ${computerScore}.`);
+        endGame('player');
+    }
+    else if(computerScore == 5)
+    {
+        endGame('computer');
     }
 }
 
-function game(){
+function endGame(winner){
 
-    let i;
-
-    for (i = 0; i < rounds; i++) {
-
-        let playerChoice = playerPlay(i);
-
-        if (playerChoice === null) {
-            console.log("Game canceled!");
-            return;
-        }
-
-        let computerChoice = computerPlay();
-        let result = playRound(playerChoice, computerChoice);
-
-        if(result == "player")
-        {
-            playerScore++;
-            console.log(`You win! ${playerChoice} beats ${computerChoice}.`);
-            console.log(`Player score: ${playerScore}, Computer score: ${computerScore}.`)
-        }
-        else if(result == "computer")
-        {
-            computerScore++;
-            console.log(`You lose! ${computerChoice} beats ${playerChoice}.`);
-            console.log(`Player score: ${playerScore}, Computer score: ${computerScore}.`)
-        }
-        else
-        {
-            console.log("It's a tie!");
-            console.log(`Player score: ${playerScore}, Computer score: ${computerScore}.`)
-        }
-
-        if(i == rounds - 1)
-        {
-            endLoop();
-        }
-    }
+    const message = `${winner === 'player' ? 'You win!' : 'Computer wins!'} Game over!`;
+  
+    resultsDisplay.textContent = message;
+    rockBtn.disabled = true;
+    paperBtn.disabled = true;
+    scissorsBtn.disabled = true;
 }
-
-let rounds;
-
-while (rounds === null || isNaN(rounds))
-{
-    rounds = prompt("Rock Paper Scissors! \nHow many rounds would you like to play?");
-
-    if (rounds === null) {break;}
-}
-
-game();
